@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+    command: air -d
+    ports:
+      - 8080:8080
+    volumes:
+      - ./app:/go/src/github.com/44taka/golang-gin
+    tty:
+      true
