@@ -24,7 +24,36 @@ func (controller *UsersController) Get(c Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, res := controller.Interactor.Get(id)
 	if res.Error != nil {
-		c.JSON(res.Status, NewHandler(res.Error.Error(), nil))
+		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
 	}
-	c.JSON(res.Status, NewHandler("success", user))
+	c.JSON(res.StatusCode, NewHandler("success", user))
+}
+
+func (controller *UsersController) Post(c Context) {
+	id, _ := strconv.Atoi(c.PostForm("id"))
+	name := c.PostForm("name")
+	_, res := controller.Interactor.Create(id, name)
+	if res.Error != nil {
+		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+	}
+	c.AbortWithStatus(res.StatusCode)
+}
+
+func (controller *UsersController) Put(c Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	name := c.PostForm("name")
+	_, res := controller.Interactor.Update(id, name)
+	if res.Error != nil {
+		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+	}
+	c.AbortWithStatus(res.StatusCode)
+}
+
+func (controller *UsersController) Delete(c Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	_, res := controller.Interactor.Delete(id)
+	if res.Error != nil {
+		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+	}
+	c.AbortWithStatus(res.StatusCode)
 }

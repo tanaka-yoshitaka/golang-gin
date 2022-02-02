@@ -12,6 +12,7 @@ type User struct {
 }
 
 func main() {
+	// asdfasnjhkjhk
 	db := infrastructure.NewDB()
 	r := infrastructure.NewRouting(db)
 	var user User

@@ -18,3 +18,41 @@ func (repo *UserRepository) FindByID(db *gorm.DB, id int) (user domain.Users, er
 
 	return user, nil
 }
+
+func (repo *UserRepository) Create(db *gorm.DB, id int, name string) (user domain.Users, err error) {
+	user.ID = id
+	user.Name = name
+
+	r := db.Create(&user)
+	if r.Error != nil {
+		return domain.Users{}, errors.New("failed create user")
+	}
+
+	return user, nil
+}
+
+func (repo *UserRepository) Update(db *gorm.DB, id int, name string) (user domain.Users, err error) {
+	user = domain.Users{}
+	db.First(&user, id)
+	if user.ID <= 0 {
+		return domain.Users{}, errors.New("user is not found")
+	}
+	user.Name = name
+
+	r := db.Save(&user)
+	if r.Error != nil {
+		return domain.Users{}, errors.New("failed update user")
+	}
+
+	return user, nil
+}
+
+func (repo *UserRepository) Delete(db *gorm.DB, id int) (user domain.Users, err error) {
+	user.ID = id
+	r := db.Delete(&user)
+	if r.Error != nil {
+		return domain.Users{}, errors.New("failed delete user")
+	}
+
+	return user, nil
+}

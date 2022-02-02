@@ -22,15 +22,15 @@ func NewRouting(db *DB) *Routing {
 }
 
 func (r *Routing) setRouting() {
-	r.Gin.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-			"test":    "test!!",
-			"test2":   "tesAAsasdfaefdfasfasefaaaaaataaaaaafkmawoefj;aowiejf;oaiwejaaa",
-		})
-	})
+	// 疎通確認
+	r.Gin.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"message": "pong"}) })
+
+	// ユーザー周り
 	usersController := controllers.NewUsersController(r.DB)
 	r.Gin.GET("/users/:id", func(c *gin.Context) { usersController.Get(c) })
+	r.Gin.POST("/users", func(c *gin.Context) { usersController.Post(c) })
+	r.Gin.PUT("/users/:id", func(c *gin.Context) { usersController.Put(c) })
+	r.Gin.DELETE("/users/:id", func(c *gin.Context) { usersController.Delete(c) })
 }
 
 func (r *Routing) Run() {

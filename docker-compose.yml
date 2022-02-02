@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app:
     build: .
-    command: air -d
+    # command: air -d
     container_name: golang-gin.app
     ports:
       - 8080:8080
