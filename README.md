@@ -6,7 +6,7 @@ Go言語の触りながら「クリーンアーキテクチャとは何ぞや？
 
 - フレームワーク:[Gin](https://github.com/gin-gonic/gin)
 - ORM:[GORM](https://github.com/go-gorm/gorm)
-- ORM:[Air](https://github.com/cosmtrek/air)
+- ホットリロード:[Air](https://github.com/cosmtrek/air)
 
 ## 使用方法
 
