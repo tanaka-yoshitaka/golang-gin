@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app:
     build: .
-    # command: air -d
+    command: air -d
     container_name: golang-gin.app
     ports:
       - 8080:8080
@@ -11,6 +11,8 @@ services:
       - ./app:/go/src/github.com/44taka/golang-gin
     tty:
       true
+    depends_on:
+      - mysql
   mysql:
     image: mysql:latest
     container_name: golang-gin.mysql

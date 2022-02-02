@@ -6,8 +6,8 @@ type ResultStatus struct {
 }
 
 func NewResultStatus(status int, err error) *ResultStatus {
-	resultStatus := new(ResultStatus)
-	resultStatus.StatusCode = status
-	resultStatus.Error = err
-	return resultStatus
+	rs := new(ResultStatus)
+	rs.StatusCode = status
+	rs.Error = err
+	return rs
 }

@@ -25,6 +25,7 @@ func (controller *UsersController) Get(c Context) {
 	user, res := controller.Interactor.Get(id)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+		return
 	}
 	c.JSON(res.StatusCode, NewHandler("success", user))
 }
@@ -35,6 +36,7 @@ func (controller *UsersController) Post(c Context) {
 	_, res := controller.Interactor.Create(id, name)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+		return
 	}
 	c.AbortWithStatus(res.StatusCode)
 }
@@ -45,6 +47,7 @@ func (controller *UsersController) Put(c Context) {
 	_, res := controller.Interactor.Update(id, name)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+		return
 	}
 	c.AbortWithStatus(res.StatusCode)
 }
@@ -54,6 +57,7 @@ func (controller *UsersController) Delete(c Context) {
 	_, res := controller.Interactor.Delete(id)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+		return
 	}
 	c.AbortWithStatus(res.StatusCode)
 }

@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"github.com/44taka/golang-gin/controllers"
+	"github.com/44taka/golang-gin/infrastructure/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,19 +12,22 @@ type Routing struct {
 	Port string
 }
 
-func NewRouting(db *DB) *Routing {
+func NewRouting(db *DB, middleware ...gin.HandlerFunc) *Routing {
 	r := &Routing{
 		DB:   db,
 		Gin:  gin.Default(),
 		Port: ":8080",
 	}
+	r.setMiddleware()
 	r.setRouting()
 	return r
 }
 
 func (r *Routing) setRouting() {
 	// 疎通確認
-	r.Gin.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"message": "pong"}) })
+	r.Gin.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
+	})
 
 	// ユーザー周り
 	usersController := controllers.NewUsersController(r.DB)
@@ -35,4 +39,9 @@ func (r *Routing) setRouting() {
 
 func (r *Routing) Run() {
 	r.Gin.Run(r.Port)
+}
+
+func (r *Routing) setMiddleware() {
+	// TODO::ミドルウェアのセットをもっと効率よくしたい
+	r.Gin.Use(middleware.MyCustomLogger())
 }
