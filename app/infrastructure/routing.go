@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"github.com/44taka/golang-gin/controllers"
 	"github.com/44taka/golang-gin/infrastructure/middleware"
+	"github.com/44taka/golang-gin/interfaces/controllers"
 	"github.com/gin-gonic/gin"
 )
 
