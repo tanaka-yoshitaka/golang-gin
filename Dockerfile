@@ -7,6 +7,7 @@ RUN go get -u gorm.io/driver/mysql
 RUN go get -u gorm.io/gorm
 RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
   github.com/ramya-rao-a/go-outline \
+  github.com/google/uuid \
   github.com/nsf/gocode \
   github.com/acroca/go-symbols \
   github.com/fatih/gomodifytags \
