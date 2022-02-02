@@ -2,12 +2,28 @@ version: "3.7"
 
 services:
   app:
-    build:
-      context: .
+    build: .
     command: air -d
+    container_name: golang-gin.app
     ports:
       - 8080:8080
     volumes:
       - ./app:/go/src/github.com/44taka/golang-gin
     tty:
       true
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:latest
+    container_name: golang-gin.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_testdb
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+      - ./mysql:/etc/mysql/conf.d
