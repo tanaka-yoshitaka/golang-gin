@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"github.com/44taka/golang-gin/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +29,8 @@ func (r *Routing) setRouting() {
 			"test2":   "tesAAsasdfaefdfasfasefaaaaaataaaaaafkmawoefj;aowiejf;oaiwejaaa",
 		})
 	})
+	usersController := controllers.NewUsersController(r.DB)
+	r.Gin.GET("/users/:id", func(c *gin.Context) { usersController.Get(c) })
 }
 
 func (r *Routing) Run() {
