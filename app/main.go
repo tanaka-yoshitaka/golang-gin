@@ -1,13 +1,20 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/44taka/golang-gin/infrastructure"
+)
+
+type User struct {
+	ID   int
+	Name string
+}
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	db := infrastructure.NewDB()
+	r := infrastructure.NewRouting(db)
+	var user User
+	fmt.Println(db.Connection.First(&user))
+	r.Run()
 }
