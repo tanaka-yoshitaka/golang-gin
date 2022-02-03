@@ -4,13 +4,15 @@ import (
 	"github.com/44taka/golang-gin/infrastructure"
 )
 
-type User struct {
-	ID   int
-	Name string
+func init() {
+	// 言語ファイル読み込み
+	c := infrastructure.NewConfig()
+	infrastructure.NewInitLanguage(c)
 }
 
 func main() {
-	db := infrastructure.NewDB()
-	r := infrastructure.NewRouting(db)
+	c := infrastructure.NewConfig()
+	db := infrastructure.NewDB(c)
+	r := infrastructure.NewRouting(db, c)
 	r.Run()
 }

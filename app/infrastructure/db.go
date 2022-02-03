@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,12 +15,13 @@ type DB struct {
 	Connection *gorm.DB
 }
 
-func NewDB() *DB {
+func NewDB(c *Config) *DB {
+	fmt.Println(c.Language)
 	return newDB(&DB{
-		Host:     "mysql",
-		Username: "root",
-		Password: "root",
-		DBName:   "my_testdb",
+		Host:     c.DB.Local.Host,
+		Username: c.DB.Local.Username,
+		Password: c.DB.Local.Password,
+		DBName:   c.DB.Local.DBName,
 	})
 }
 
