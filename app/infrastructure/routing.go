@@ -12,13 +12,13 @@ type Routing struct {
 	Port string
 }
 
-func NewRouting(db *DB, middleware ...gin.HandlerFunc) *Routing {
+func NewRouting(db *DB, c *Config) *Routing {
 	r := &Routing{
 		DB:   db,
 		Gin:  gin.Default(),
-		Port: ":8080",
+		Port: c.Routing.Port,
 	}
-	r.setMiddleware()
+	r.setMiddleware(c)
 	r.setRouting()
 	return r
 }
@@ -41,8 +41,9 @@ func (r *Routing) Run() {
 	r.Gin.Run(r.Port)
 }
 
-func (r *Routing) setMiddleware() {
+func (r *Routing) setMiddleware(c *Config) {
 	// TODO::ミドルウェアのセットをもっと効率よくしたい
 	r.Gin.Use(middleware.MyCustomLogger())
+	r.Gin.Use(middleware.SetLaguageMessage(c.Language))
 	r.Gin.Use(middleware.RequestID())
 }

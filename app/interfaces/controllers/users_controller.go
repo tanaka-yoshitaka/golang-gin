@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/44taka/golang-gin/interfaces/database"
 	"github.com/44taka/golang-gin/usecase"
+	"golang.org/x/text/message"
 )
 
 type UsersController struct {
@@ -21,6 +23,10 @@ func NewUsersController(db database.DB) *UsersController {
 }
 
 func (controller *UsersController) Get(c Context) {
+	// 試しにcontextから取得する
+	p := c.MustGet("language_message").(*message.Printer)
+	fmt.Println(p.Sprintf("bread"))
+
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, res := controller.Interactor.Get(id)
 	if res.Error != nil {
