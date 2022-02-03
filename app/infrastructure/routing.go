@@ -45,4 +45,5 @@ func (r *Routing) setMiddleware(c *Config) {
 	// TODO::ミドルウェアのセットをもっと効率よくしたい
 	r.Gin.Use(middleware.MyCustomLogger())
 	r.Gin.Use(middleware.SetLaguageMessage(c.Language))
+	r.Gin.Use(middleware.RequestID())
 }
