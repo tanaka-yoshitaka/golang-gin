@@ -23,7 +23,8 @@ func NewUsersController(db database.DB) *UsersController {
 }
 
 func (controller *UsersController) Get(c Context) {
-	p := c.MustGet("lang").(*message.Printer)
+	// 試しにcontextから取得する
+	p := c.MustGet("language_message").(*message.Printer)
 	fmt.Println(p.Sprintf("bread"))
 
 	id, _ := strconv.Atoi(c.Param("id"))
