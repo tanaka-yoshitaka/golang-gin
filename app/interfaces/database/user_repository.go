@@ -56,3 +56,12 @@ func (repo *UserRepository) Delete(db *gorm.DB, id int) (user domain.Users, err 
 
 	return user, nil
 }
+
+func (repo *UserRepository) Login(db *gorm.DB, id int, password string) (user domain.Users, err error) {
+	r := db.Where("id = ?", id).Where("password = ?", password).First(&user)
+	if r.Error != nil {
+		return domain.Users{}, errors.New("user is not found")
+	}
+
+	return user, nil
+}

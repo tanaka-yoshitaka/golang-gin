@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/44taka/golang-gin/domain"
+	"github.com/44taka/golang-gin/utils"
 )
 
 type UserInteractor struct {
@@ -47,4 +48,22 @@ func (interactor *UserInteractor) Delete(id int) (user domain.Users, resultStatu
 		return domain.Users{}, NewResultStatus(http.StatusBadRequest, err)
 	}
 	return user, NewResultStatus(http.StatusNoContent, nil)
+}
+
+func (interactor *UserInteractor) Login(id int, password string) (user domain.Users, token string, resultStatus *ResultStatus) {
+	db := interactor.DB.Connect()
+	user, err := interactor.User.Login(db, id, password)
+	if err != nil {
+		return domain.Users{}, "", NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	// TODO::シークレットキーなどは設定ファイルから読み込ませる
+	jwtWrppaer := utils.JwtWrapper{
+		SecretKey:       "verysecretkey",
+		Issuer:          "AuthService",
+		ExpirationHours: 24,
+	}
+	token, err = jwtWrppaer.GenerateToken(user.ID)
+
+	return user, token, NewResultStatus(http.StatusOK, nil)
 }

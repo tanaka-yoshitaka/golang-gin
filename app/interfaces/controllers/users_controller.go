@@ -67,3 +67,14 @@ func (controller *UsersController) Delete(c Context) {
 	}
 	c.AbortWithStatus(res.StatusCode)
 }
+
+func (controller *UsersController) Login(c Context) {
+	id, _ := strconv.Atoi(c.PostForm("id"))
+	password := c.PostForm("password")
+	_, token, res := controller.Interactor.Login(id, password)
+	if res.Error != nil {
+		c.JSON(res.StatusCode, NewHandler(res.Error.Error(), nil))
+		return
+	}
+	c.JSON(res.StatusCode, NewHandler("success", token))
+}

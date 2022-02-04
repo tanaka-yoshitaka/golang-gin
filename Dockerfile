@@ -15,6 +15,8 @@ RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
   github.com/haya14busa/goplay/cmd/goplay \
   github.com/go-delve/delve/cmd/dlv \
   golang.org/x/lint/golint \
-  golang.org/x/tools/gopls
+  golang.org/x/tools/gopls \
+  github.com/dgrijalva/jwt-go \ 
+  github.com/appleboy/gin-jwt/v2
 
 WORKDIR /go/src/github.com/44taka/golang-gin
