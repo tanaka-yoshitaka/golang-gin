@@ -18,32 +18,44 @@ func NewRouting(db *DB, c *Config) *Routing {
 		Gin:  gin.Default(),
 		Port: c.Routing.Port,
 	}
-	r.setMiddleware(c)
-	r.setRouting()
+	r.setRouting(c)
 	return r
 }
 
-func (r *Routing) setRouting() {
+type login struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
+}
+
+type User struct {
+	UserName  string
+	FirstName string
+	LastName  string
+}
+
+func (r *Routing) setRouting(c *Config) {
+	// 共通ミドルウェア設定
+	r.Gin.Use(middleware.MyCustomLogger())
+	r.Gin.Use(middleware.SetLaguageMessage(c.Language))
+	r.Gin.Use(middleware.RequestID())
+
 	// 疎通確認
-	r.Gin.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "pong"})
-	})
+	r.Gin.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"message": "pong"}) })
 
 	// ユーザー周り
 	usersController := controllers.NewUsersController(r.DB)
-	r.Gin.GET("/users/:id", func(c *gin.Context) { usersController.Get(c) })
-	r.Gin.POST("/users", func(c *gin.Context) { usersController.Post(c) })
-	r.Gin.PUT("/users/:id", func(c *gin.Context) { usersController.Put(c) })
-	r.Gin.DELETE("/users/:id", func(c *gin.Context) { usersController.Delete(c) })
+	r.Gin.POST("/login", func(c *gin.Context) { usersController.Login(c) })
+
+	// 認証グループ
+	authGroup := r.Gin.Group("/auth", middleware.AuthMiddleware())
+	authGroup.POST("/users", func(c *gin.Context) { usersController.Post(c) })
+	authGroup.GET("/users/:id", func(c *gin.Context) { usersController.Get(c) })
+	authGroup.PUT("/users/:id", func(c *gin.Context) { usersController.Put(c) })
+	authGroup.DELETE("/users/:id", func(c *gin.Context) { usersController.Delete(c) })
+	authGroup.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"message": "auth_pong"}) })
+
 }
 
 func (r *Routing) Run() {
 	r.Gin.Run(r.Port)
-}
-
-func (r *Routing) setMiddleware(c *Config) {
-	// TODO::ミドルウェアのセットをもっと効率よくしたい
-	r.Gin.Use(middleware.MyCustomLogger())
-	r.Gin.Use(middleware.SetLaguageMessage(c.Language))
-	r.Gin.Use(middleware.RequestID())
 }
