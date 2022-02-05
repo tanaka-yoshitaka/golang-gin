@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"net/http"
+
 	"github.com/44taka/golang-gin/infrastructure/middleware"
 	"github.com/44taka/golang-gin/interfaces/controllers"
 	"github.com/gin-gonic/gin"
@@ -53,6 +55,21 @@ func (r *Routing) setRouting(c *Config) {
 	authGroup.PUT("/users/:id", func(c *gin.Context) { usersController.Put(c) })
 	authGroup.DELETE("/users/:id", func(c *gin.Context) { usersController.Delete(c) })
 	authGroup.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"message": "auth_pong"}) })
+
+	// 404
+	r.Gin.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "page not found.",
+		})
+	})
+	// 405
+	r.Gin.NoMethod(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusMethodNotAllowed,
+			"message": "method not allowed.",
+		})
+	})
 
 }
 

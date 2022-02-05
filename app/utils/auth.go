@@ -19,7 +19,7 @@ type JwtClaim struct {
 	jwt.StandardClaims
 }
 
-// JWTトークン発行
+// トークン発行
 func (j *JwtWrapper) GenerateToken(id int) (signedToken string, err error) {
 	claims := &JwtClaim{
 		UserId: id,
@@ -39,6 +39,7 @@ func (j *JwtWrapper) GenerateToken(id int) (signedToken string, err error) {
 	return
 }
 
+// トークン検証
 func (j *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaim, err error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
