@@ -12,14 +12,24 @@ type UserInteractor struct {
 	User UserRepository
 }
 
-// ユーザー情報取得
-func (interactor *UserInteractor) Get(id int) (user domain.UsersForGet, resultStatus *ResultStatus) {
+// 全てユーザー情報取得
+func (interactor *UserInteractor) GetAll() (users []domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
-	foundUser, err := interactor.User.FindByID(db, id)
+	users, err := interactor.User.FindAll(db)
 	if err != nil {
-		return domain.UsersForGet{}, NewResultStatus(http.StatusNotFound, err)
+		return users, NewResultStatus(http.StatusNotFound, err)
 	}
-	user = foundUser.BuildForGet()
+
+	return users, NewResultStatus(http.StatusOK, nil)
+}
+
+// ユーザー情報取得
+func (interactor *UserInteractor) Get(id int) (user domain.Users, resultStatus *ResultStatus) {
+	db := interactor.DB.Connect()
+	user, err := interactor.User.FindByID(db, id)
+	if err != nil {
+		return user, NewResultStatus(http.StatusNotFound, err)
+	}
 
 	return user, NewResultStatus(http.StatusOK, nil)
 }

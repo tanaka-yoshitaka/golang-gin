@@ -23,6 +23,16 @@ func NewUsersController(db database.DB) *UsersController {
 	}
 }
 
+// 全ユーザー情報取得
+func (controller *UsersController) GetAll(c Context) {
+	user, res := controller.Interactor.GetAll()
+	if res.Error != nil {
+		c.JSON(res.StatusCode, NewHandler(res.StatusCode, res.Error.Error(), nil))
+		return
+	}
+	c.JSON(res.StatusCode, NewHandler(res.StatusCode, "OK", user))
+}
+
 // ユーザー情報取得
 func (controller *UsersController) Get(c Context) {
 	// 試しにcontextから取得する
