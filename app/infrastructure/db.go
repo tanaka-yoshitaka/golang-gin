@@ -1,8 +1,6 @@
 package infrastructure
 
 import (
-	"fmt"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -16,7 +14,6 @@ type DB struct {
 }
 
 func NewDB(c *Config) *DB {
-	fmt.Println(c.Language)
 	return newDB(&DB{
 		Host:     c.DB.Local.Host,
 		Username: c.DB.Local.Username,

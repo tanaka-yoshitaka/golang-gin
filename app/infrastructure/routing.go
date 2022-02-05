@@ -24,17 +24,6 @@ func NewRouting(db *DB, c *Config) *Routing {
 	return r
 }
 
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
-}
-
 func (r *Routing) setRouting(c *Config) {
 	// 共通ミドルウェア設定
 	r.Gin.Use(middleware.MyCustomLogger())
