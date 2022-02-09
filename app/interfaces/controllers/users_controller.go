@@ -7,7 +7,6 @@ import (
 	"github.com/44taka/golang-gin/interfaces/database"
 	"github.com/44taka/golang-gin/usecase"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/text/message"
 )
 
 type UsersController struct {
@@ -36,9 +35,11 @@ func (controller *UsersController) GetAll(c Context) {
 // ユーザー情報取得
 func (controller *UsersController) Get(c Context) {
 	// 試しにcontextから取得する
-	p := c.MustGet("language_message").(*message.Printer)
-	fmt.Println(p.Sprintf("bread"))
-
+	// p := c.MustGet("language_message").(*message.Printer)
+	// fmt.Println(p.Sprintf("bread"))
+	fmt.Println("+++++++++++++++++++")
+	fmt.Println(c.Param("id"))
+	fmt.Println("+++++++++++++++++++")
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, res := controller.Interactor.Get(id)
 	if res.Error != nil {
@@ -50,9 +51,9 @@ func (controller *UsersController) Get(c Context) {
 
 // ユーザー新規登録
 func (controller *UsersController) Post(c Context) {
-	id, _ := strconv.Atoi(c.PostForm("id"))
 	name := c.PostForm("name")
-	_, res := controller.Interactor.Create(id, name)
+	password := c.PostForm("password")
+	_, res := controller.Interactor.Create(name, password)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.StatusCode, res.Error.Error(), nil))
 		return

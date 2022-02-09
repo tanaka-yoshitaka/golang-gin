@@ -1,8 +1,9 @@
 package domain
 
 type Users struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Password string
 }
 
 type UsersResult struct {

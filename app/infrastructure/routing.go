@@ -36,11 +36,10 @@ func (r *Routing) setRouting(c *Config) {
 	// ログイン
 	usersController := controllers.NewUsersController(r.DB)
 	r.Gin.POST("/login", func(c *gin.Context) { usersController.Login(c) })
-	r.Gin.GET("/users", func(c *gin.Context) { usersController.GetAll(c) })
 
 	// ログイン後ページ
 	authGroup := r.Gin.Group("/auth", middleware.AuthMiddleware())
-	// authGroup.GET("/users", func(c *gin.Context) { usersController.GetAll(c) })
+	authGroup.GET("/users", func(c *gin.Context) { usersController.GetAll(c) })
 	authGroup.POST("/users", func(c *gin.Context) { usersController.Post(c) })
 	authGroup.GET("/users/:id", func(c *gin.Context) { usersController.Get(c) })
 	authGroup.PUT("/users/:id", func(c *gin.Context) { usersController.Put(c) })

@@ -35,9 +35,9 @@ func (interactor *UserInteractor) Get(id int) (user domain.Users, resultStatus *
 }
 
 // ユーザー新規作成
-func (interactor *UserInteractor) Create(id int, name string) (user domain.Users, resultStatus *ResultStatus) {
+func (interactor *UserInteractor) Create(name string, password string) (user domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
-	user, err := interactor.User.Create(db, id, name)
+	user, err := interactor.User.Create(db, name, password)
 	if err != nil {
 		return domain.Users{}, NewResultStatus(http.StatusBadRequest, err)
 	}

@@ -29,10 +29,9 @@ func (repo *UserRepository) FindByID(db *gorm.DB, id int) (user domain.Users, er
 	return user, nil
 }
 
-func (repo *UserRepository) Create(db *gorm.DB, id int, name string) (user domain.Users, err error) {
-	user.ID = id
+func (repo *UserRepository) Create(db *gorm.DB, name string, password string) (user domain.Users, err error) {
 	user.Name = name
-
+	user.Password = password
 	r := db.Create(&user)
 	if r.Error != nil {
 		return domain.Users{}, errors.New("failed create user")
