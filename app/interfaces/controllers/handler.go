@@ -1,13 +1,15 @@
 package controllers
 
 type Handler struct {
-    Message string   `json:"message"`
-    Data interface{} `json:"data"`
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Result  interface{} `json:"result"`
 }
 
-func NewHandler(message string, data interface{}) *Handler {
-    H := new(Handler)
-    H.Message = message
-    H.Data = data
-    return H
+func NewHandler(status int, message string, result interface{}) *Handler {
+	H := new(Handler)
+	H.Status = status
+	H.Message = message
+	H.Result = result
+	return H
 }

@@ -9,6 +9,16 @@ import (
 
 type UserRepository struct{}
 
+func (repo *UserRepository) FindAll(db *gorm.DB) (users []domain.Users, err error) {
+	users = []domain.Users{}
+	r := db.Find(&users)
+	if r.Error != nil {
+		return []domain.Users{}, errors.New("user is not found")
+	}
+
+	return users, nil
+}
+
 func (repo *UserRepository) FindByID(db *gorm.DB, id int) (user domain.Users, err error) {
 	user = domain.Users{}
 	r := db.First(&user, id)

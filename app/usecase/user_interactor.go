@@ -12,17 +12,29 @@ type UserInteractor struct {
 	User UserRepository
 }
 
-func (interactor *UserInteractor) Get(id int) (user domain.UsersForGet, resultStatus *ResultStatus) {
+// 全てユーザー情報取得
+func (interactor *UserInteractor) GetAll() (users []domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
-	foundUser, err := interactor.User.FindByID(db, id)
+	users, err := interactor.User.FindAll(db)
 	if err != nil {
-		return domain.UsersForGet{}, NewResultStatus(http.StatusNotFound, err)
+		return users, NewResultStatus(http.StatusNotFound, err)
 	}
-	user = foundUser.BuildForGet()
+
+	return users, NewResultStatus(http.StatusOK, nil)
+}
+
+// ユーザー情報取得
+func (interactor *UserInteractor) Get(id int) (user domain.Users, resultStatus *ResultStatus) {
+	db := interactor.DB.Connect()
+	user, err := interactor.User.FindByID(db, id)
+	if err != nil {
+		return user, NewResultStatus(http.StatusNotFound, err)
+	}
 
 	return user, NewResultStatus(http.StatusOK, nil)
 }
 
+// ユーザー新規作成
 func (interactor *UserInteractor) Create(id int, name string) (user domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
 	user, err := interactor.User.Create(db, id, name)
@@ -32,6 +44,7 @@ func (interactor *UserInteractor) Create(id int, name string) (user domain.Users
 	return user, NewResultStatus(http.StatusCreated, nil)
 }
 
+// ユーザー情報更新
 func (interactor *UserInteractor) Update(id int, name string) (user domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
 	user, err := interactor.User.Update(db, id, name)
@@ -41,6 +54,7 @@ func (interactor *UserInteractor) Update(id int, name string) (user domain.Users
 	return user, NewResultStatus(http.StatusNoContent, nil)
 }
 
+// ユーザー情報削除
 func (interactor *UserInteractor) Delete(id int) (user domain.Users, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
 	user, err := interactor.User.Delete(db, id)
@@ -50,6 +64,7 @@ func (interactor *UserInteractor) Delete(id int) (user domain.Users, resultStatu
 	return user, NewResultStatus(http.StatusNoContent, nil)
 }
 
+// ログインユーザー情報取得
 func (interactor *UserInteractor) Login(id int, password string) (user domain.Users, token string, resultStatus *ResultStatus) {
 	db := interactor.DB.Connect()
 	user, err := interactor.User.Login(db, id, password)
@@ -58,12 +73,16 @@ func (interactor *UserInteractor) Login(id int, password string) (user domain.Us
 	}
 
 	// TODO::シークレットキーなどは設定ファイルから読み込ませる
+	// アクセストークン発行
 	jwtWrppaer := utils.JwtWrapper{
 		SecretKey:       "verysecretkey",
 		Issuer:          "AuthService",
-		ExpirationHours: 24,
+		ExpirationHours: 1,
 	}
 	token, err = jwtWrppaer.GenerateToken(user.ID)
+	if err != nil {
+		return domain.Users{}, "", NewResultStatus(http.StatusBadRequest, err)
+	}
 
 	return user, token, NewResultStatus(http.StatusOK, nil)
 }
