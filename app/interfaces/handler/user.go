@@ -9,6 +9,8 @@ type UserHandler interface {
 	FindAll(ctx *gin.Context)
 	FindById(ctx *gin.Context)
 	Create(ctx *gin.Context)
+	Update(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type userHandler struct {
@@ -61,5 +63,29 @@ func (uh userHandler) Create(ctx *gin.Context) {
 		return
 	}
 	ctx.AbortWithStatus(201)
+	return
+}
+
+func (uh userHandler) Update(ctx *gin.Context) {
+	err := uh.userUseCase.Update(ctx)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"message": "failed...",
+		})
+		return
+	}
+	ctx.AbortWithStatus(204)
+	return
+}
+
+func (uh userHandler) Delete(ctx *gin.Context) {
+	err := uh.userUseCase.Delete(ctx)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"message": "failed...",
+		})
+		return
+	}
+	ctx.AbortWithStatus(204)
 	return
 }

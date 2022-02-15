@@ -43,3 +43,27 @@ func (up userPersistence) Create(ctx *gin.Context, name string, password string)
 	}
 	return nil
 }
+
+func (up userPersistence) Update(ctx *gin.Context, id int, name string, password string) error {
+	user := model.User{}
+	up.conn.First(&user, id)
+	if user.ID <= 0 {
+		return errors.New("user is not found")
+	}
+	user.Name = name
+	user.Password = password
+	r := up.conn.Save(&user)
+	if r.Error != nil {
+		return errors.New("failed update user...")
+	}
+	return nil
+}
+
+func (up userPersistence) Delete(ctx *gin.Context, id int) error {
+	user := model.User{ID: id}
+	r := up.conn.Delete(&user)
+	if r.Error != nil {
+		return errors.New("failed delete user")
+	}
+	return nil
+}

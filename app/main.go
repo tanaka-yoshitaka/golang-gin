@@ -27,5 +27,7 @@ func main() {
 	r.GET("/users", func(ctx *gin.Context) { userHandler.FindAll(ctx) })
 	r.GET("/users/:id", func(ctx *gin.Context) { userHandler.FindById(ctx) })
 	r.POST("/users", func(ctx *gin.Context) { userHandler.Create(ctx) })
+	r.PUT("/users/:id", func(ctx *gin.Context) { userHandler.Update(ctx) })
+	r.DELETE("/users/:id", func(ctx *gin.Context) { userHandler.Delete(ctx) })
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

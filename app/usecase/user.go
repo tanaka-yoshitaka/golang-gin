@@ -12,6 +12,8 @@ type UserUseCase interface {
 	FindAll(*gin.Context) ([]*model.User, error)
 	FindById(*gin.Context) (model.User, error)
 	Create(ctx *gin.Context) error
+	Update(ctx *gin.Context) error
+	Delete(ctx *gin.Context) error
 }
 
 type userUseCase struct {
@@ -45,6 +47,26 @@ func (uu userUseCase) Create(ctx *gin.Context) (err error) {
 	name := ctx.PostForm("name")
 	password := ctx.PostForm("password")
 	err = uu.userRepository.Create(ctx, name, password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (uu userUseCase) Update(ctx *gin.Context) (err error) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	name := ctx.PostForm("name")
+	password := ctx.PostForm("password")
+	err = uu.userRepository.Update(ctx, id, name, password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (uu userUseCase) Delete(ctx *gin.Context) (err error) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	err = uu.userRepository.Delete(ctx, id)
 	if err != nil {
 		return err
 	}
