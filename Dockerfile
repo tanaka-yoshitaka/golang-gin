@@ -17,6 +17,8 @@ RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
   golang.org/x/lint/golint \
   golang.org/x/tools/gopls \
   github.com/dgrijalva/jwt-go \ 
-  github.com/appleboy/gin-jwt/v2
+  github.com/appleboy/gin-jwt/v2 \
+  github.com/stretchr/testify
+RUN go install github.com/golang/mock/mockgen@latest
 
 WORKDIR /go/src/github.com/44taka/golang-gin
