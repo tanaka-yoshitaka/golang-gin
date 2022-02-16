@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type IUserRepository interface {
+type UserRepository interface {
 	FindAll(ctx *gin.Context) ([]*model.User, error)
 	FindById(ctx *gin.Context, id int) (model.User, error)
 	Create(ctx *gin.Context, name string, password string) error
