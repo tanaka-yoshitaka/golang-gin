@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/44taka/golang-gin/domain/model"
 	"github.com/44taka/golang-gin/domain/repository"
 	"github.com/gin-gonic/gin"

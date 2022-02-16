@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS docker CHARACTER SET utf8mb4 COLLATE utf8mb4_gener
 CREATE USER IF NOT EXISTS 'docker'@'%' IDENTIFIED BY 'docker';
 GRANT ALL PRIVILEGES ON docker.* TO 'docker'@'%';
 
-create table my_testdb.users (id int not null primary key, name varchar(100) not null, password varchar(10) not null);
+create table my_testdb.users (id int not null primary key auto_increment, name varchar(100) not null, password varchar(10) not null);
 insert into my_testdb.users values (1, 'ichiro', 'password');
 insert into my_testdb.users values (2, 'jiro', 'password');
 insert into my_testdb.users values (3, 'saburo', 'password');
