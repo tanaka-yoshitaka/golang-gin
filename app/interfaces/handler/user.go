@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler interface {
+type IUserHandler interface {
 	FindAll(ctx *gin.Context)
 	FindById(ctx *gin.Context)
 	Create(ctx *gin.Context)
@@ -16,17 +16,15 @@ type UserHandler interface {
 	Delete(ctx *gin.Context)
 }
 
-type userHandler struct {
-	userUseCase usecase.UserUseCase
+type UserHandler struct {
+	userUseCase usecase.IUserUseCase
 }
 
-func NewUserHandler(uu usecase.UserUseCase) UserHandler {
-	return &userHandler{
-		userUseCase: uu,
-	}
+func NewUserHandler(uu usecase.IUserUseCase) IUserHandler {
+	return &UserHandler{userUseCase: uu}
 }
 
-func (uh userHandler) FindAll(ctx *gin.Context) {
+func (uh *UserHandler) FindAll(ctx *gin.Context) {
 	// ユースケース呼び出し
 	users, err := uh.userUseCase.FindAll(ctx)
 	if err != nil {
@@ -42,7 +40,7 @@ func (uh userHandler) FindAll(ctx *gin.Context) {
 	return
 }
 
-func (uh userHandler) FindById(ctx *gin.Context) {
+func (uh *UserHandler) FindById(ctx *gin.Context) {
 	var uri validator.UserUri
 	err := ctx.ShouldBindUri(&uri)
 	if err != nil {
@@ -65,7 +63,7 @@ func (uh userHandler) FindById(ctx *gin.Context) {
 	return
 }
 
-func (uh userHandler) Create(ctx *gin.Context) {
+func (uh *UserHandler) Create(ctx *gin.Context) {
 	var form validator.UserForm
 	err := ctx.ShouldBind(&form)
 	if err != nil {
@@ -85,7 +83,7 @@ func (uh userHandler) Create(ctx *gin.Context) {
 	return
 }
 
-func (uh userHandler) Update(ctx *gin.Context) {
+func (uh *UserHandler) Update(ctx *gin.Context) {
 	var uri validator.UserUri
 	err := ctx.ShouldBindUri(&uri)
 	if err != nil {
@@ -113,7 +111,7 @@ func (uh userHandler) Update(ctx *gin.Context) {
 	return
 }
 
-func (uh userHandler) Delete(ctx *gin.Context) {
+func (uh *UserHandler) Delete(ctx *gin.Context) {
 	var uri validator.UserUri
 	err := ctx.ShouldBindUri(&uri)
 	if err != nil {

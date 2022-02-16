@@ -9,59 +9,59 @@ import (
 	"gorm.io/gorm"
 )
 
-type userPersistence struct {
-	conn *gorm.DB
+type UserPersistence struct {
+	db *gorm.DB
 }
 
-func NewUserPersistence(conn *gorm.DB) repository.UserRepository {
-	return &userPersistence{conn: conn}
+func NewUserPersistence(db *gorm.DB) repository.IUserRepository {
+	return &UserPersistence{db: db}
 }
 
-func (up userPersistence) FindAll(ctx *gin.Context) ([]*model.User, error) {
+func (up *UserPersistence) FindAll(ctx *gin.Context) ([]*model.User, error) {
 	users := []*model.User{}
-	r := up.conn.Find(&users)
+	r := up.db.Find(&users)
 	if r.Error != nil {
 		return users, errors.New("user is not found")
 	}
 	return users, nil
 }
 
-func (up userPersistence) FindById(ctx *gin.Context, id int) (model.User, error) {
+func (up *UserPersistence) FindById(ctx *gin.Context, id int) (model.User, error) {
 	user := model.User{}
-	r := up.conn.First(&user, id)
+	r := up.db.First(&user, id)
 	if r.Error != nil {
 		return user, errors.New("user is not found")
 	}
 	return user, nil
 }
 
-func (up userPersistence) Create(ctx *gin.Context, name string, password string) error {
+func (up *UserPersistence) Create(ctx *gin.Context, name string, password string) error {
 	user := model.User{Name: name, Password: password}
-	r := up.conn.Create(&user)
+	r := up.db.Create(&user)
 	if r.Error != nil {
 		return errors.New("failed create user...")
 	}
 	return nil
 }
 
-func (up userPersistence) Update(ctx *gin.Context, id int, name string, password string) error {
+func (up *UserPersistence) Update(ctx *gin.Context, id int, name string, password string) error {
 	user := model.User{}
-	up.conn.First(&user, id)
+	up.db.First(&user, id)
 	if user.ID <= 0 {
 		return errors.New("user is not found")
 	}
 	user.Name = name
 	user.Password = password
-	r := up.conn.Save(&user)
+	r := up.db.Save(&user)
 	if r.Error != nil {
 		return errors.New("failed update user...")
 	}
 	return nil
 }
 
-func (up userPersistence) Delete(ctx *gin.Context, id int) error {
+func (up *UserPersistence) Delete(ctx *gin.Context, id int) error {
 	user := model.User{ID: id}
-	r := up.conn.Delete(&user)
+	r := up.db.Delete(&user)
 	if r.Error != nil {
 		return errors.New("failed delete user")
 	}
