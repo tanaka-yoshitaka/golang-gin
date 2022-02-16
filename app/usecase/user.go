@@ -1,19 +1,17 @@
 package usecase
 
 import (
-	"strconv"
-
 	"github.com/44taka/golang-gin/domain/model"
 	"github.com/44taka/golang-gin/domain/repository"
 	"github.com/gin-gonic/gin"
 )
 
 type UserUseCase interface {
-	FindAll(*gin.Context) ([]*model.User, error)
-	FindById(*gin.Context) (model.User, error)
-	Create(ctx *gin.Context) error
-	Update(ctx *gin.Context) error
-	Delete(ctx *gin.Context) error
+	FindAll(ctx *gin.Context) ([]*model.User, error)
+	FindById(ctx *gin.Context, id int) (model.User, error)
+	Create(ctx *gin.Context, name string, password string) error
+	Update(ctx *gin.Context, id int, name string, password string) error
+	Delete(ctx *gin.Context, id int) error
 }
 
 type userUseCase struct {
@@ -34,8 +32,7 @@ func (uu userUseCase) FindAll(ctx *gin.Context) (users []*model.User, err error)
 	return users, nil
 }
 
-func (uu userUseCase) FindById(ctx *gin.Context) (user model.User, err error) {
-	id, _ := strconv.Atoi(ctx.Param("id"))
+func (uu userUseCase) FindById(ctx *gin.Context, id int) (user model.User, err error) {
 	user, err = uu.userRepository.FindById(ctx, id)
 	if err != nil {
 		return user, err
@@ -43,9 +40,7 @@ func (uu userUseCase) FindById(ctx *gin.Context) (user model.User, err error) {
 	return user, nil
 }
 
-func (uu userUseCase) Create(ctx *gin.Context) (err error) {
-	name := ctx.PostForm("name")
-	password := ctx.PostForm("password")
+func (uu userUseCase) Create(ctx *gin.Context, name string, password string) (err error) {
 	err = uu.userRepository.Create(ctx, name, password)
 	if err != nil {
 		return err
@@ -53,10 +48,7 @@ func (uu userUseCase) Create(ctx *gin.Context) (err error) {
 	return nil
 }
 
-func (uu userUseCase) Update(ctx *gin.Context) (err error) {
-	id, _ := strconv.Atoi(ctx.Param("id"))
-	name := ctx.PostForm("name")
-	password := ctx.PostForm("password")
+func (uu userUseCase) Update(ctx *gin.Context, id int, name string, password string) (err error) {
 	err = uu.userRepository.Update(ctx, id, name, password)
 	if err != nil {
 		return err
@@ -64,8 +56,7 @@ func (uu userUseCase) Update(ctx *gin.Context) (err error) {
 	return nil
 }
 
-func (uu userUseCase) Delete(ctx *gin.Context) (err error) {
-	id, _ := strconv.Atoi(ctx.Param("id"))
+func (uu userUseCase) Delete(ctx *gin.Context, id int) (err error) {
 	err = uu.userRepository.Delete(ctx, id)
 	if err != nil {
 		return err

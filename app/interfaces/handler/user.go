@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"net/http"
+
+	"github.com/44taka/golang-gin/interfaces/validator"
 	"github.com/44taka/golang-gin/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -27,12 +30,12 @@ func (uh userHandler) FindAll(ctx *gin.Context) {
 	// ユースケース呼び出し
 	users, err := uh.userUseCase.FindAll(ctx)
 	if err != nil {
-		ctx.JSON(404, gin.H{
+		ctx.JSON(http.StatusNotFound, gin.H{
 			"message": "not found user",
 		})
 		return
 	}
-	ctx.JSON(200, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": "get user all",
 		"result":  users,
 	})
@@ -40,14 +43,22 @@ func (uh userHandler) FindAll(ctx *gin.Context) {
 }
 
 func (uh userHandler) FindById(ctx *gin.Context) {
-	user, err := uh.userUseCase.FindById(ctx)
+	var uri validator.UserUri
+	err := ctx.ShouldBindUri(&uri)
 	if err != nil {
-		ctx.JSON(404, gin.H{
-			"message": "not found user",
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "バリデーションエラー",
 		})
 		return
 	}
-	ctx.JSON(200, gin.H{
+	user, err := uh.userUseCase.FindById(ctx, uri.ID)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": "get user",
 		"result":  user,
 	})
@@ -55,37 +66,69 @@ func (uh userHandler) FindById(ctx *gin.Context) {
 }
 
 func (uh userHandler) Create(ctx *gin.Context) {
-	err := uh.userUseCase.Create(ctx)
+	var form validator.UserForm
+	err := ctx.ShouldBind(&form)
 	if err != nil {
-		ctx.JSON(400, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "バリデーションエラー",
+		})
+		return
+	}
+	err = uh.userUseCase.Create(ctx, form.Name, form.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "failed...",
 		})
 		return
 	}
-	ctx.AbortWithStatus(201)
+	ctx.AbortWithStatus(http.StatusCreated)
 	return
 }
 
 func (uh userHandler) Update(ctx *gin.Context) {
-	err := uh.userUseCase.Update(ctx)
+	var uri validator.UserUri
+	err := ctx.ShouldBindUri(&uri)
 	if err != nil {
-		ctx.JSON(400, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "バリデーションエラー",
+		})
+		return
+	}
+	var form validator.UserForm
+	err = ctx.ShouldBind(&form)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "バリデーションエラー",
+		})
+		return
+	}
+	err = uh.userUseCase.Update(ctx, uri.ID, form.Name, form.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "failed...",
 		})
 		return
 	}
-	ctx.AbortWithStatus(204)
+	ctx.AbortWithStatus(http.StatusNoContent)
 	return
 }
 
 func (uh userHandler) Delete(ctx *gin.Context) {
-	err := uh.userUseCase.Delete(ctx)
+	var uri validator.UserUri
+	err := ctx.ShouldBindUri(&uri)
 	if err != nil {
-		ctx.JSON(400, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "バリデーションエラー",
+		})
+		return
+	}
+	err = uh.userUseCase.Delete(ctx, uri.ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "failed...",
 		})
 		return
 	}
-	ctx.AbortWithStatus(204)
+	ctx.AbortWithStatus(http.StatusNoContent)
 	return
 }
