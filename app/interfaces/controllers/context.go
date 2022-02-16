@@ -8,4 +8,5 @@ type Context interface {
 	Param(key string) string
 	PostForm(key string) string
 	MustGet(key string) interface{}
+	Bind(obj interface{}) error
 }

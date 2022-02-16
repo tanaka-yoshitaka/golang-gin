@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/44taka/golang-gin/domain"
 	"github.com/44taka/golang-gin/interfaces/database"
 	"github.com/44taka/golang-gin/usecase"
 	"github.com/gin-gonic/gin"
@@ -53,6 +54,18 @@ func (controller *UsersController) Get(c Context) {
 func (controller *UsersController) Post(c Context) {
 	name := c.PostForm("name")
 	password := c.PostForm("password")
+
+	// バリデーション
+	var users domain.Users
+	users.Name = name
+	users.Password = password
+	if err := c.Bind(&users); err != nil {
+		c.JSON(400, NewHandler(400, err.Error(), nil))
+		return
+	} else {
+		fmt.Println("ajwefiawjefoaiwhefoiawjeofiawjefaj")
+	}
+
 	_, res := controller.Interactor.Create(name, password)
 	if res.Error != nil {
 		c.JSON(res.StatusCode, NewHandler(res.StatusCode, res.Error.Error(), nil))
